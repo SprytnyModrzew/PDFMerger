@@ -1,7 +1,7 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
 
 
-def merge_pdfs(paths, output, password=None):
+def merge_pdfs(paths, output):
     pdf_writer = PdfFileWriter()
 
     for path in paths:

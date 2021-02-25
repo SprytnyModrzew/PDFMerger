@@ -1,11 +1,12 @@
-import sys
 import re
-from PySide6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QPushButton, QDialog, QListWidget, \
-    QListWidgetItem, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QFrame, QGridLayout, QSizePolicy, QWidget, QTableWidget, \
-    QTableWidgetItem
-from PySide6.QtGui import QIntValidator, QValidator, QIcon
+import sys
+
+from PySide6.QtGui import QIntValidator, QIcon
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QPushButton, QDialog, QListWidget, \
+    QListWidgetItem, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QFrame
 # from PyQt5 import QtWidgets
 from qt_material import apply_stylesheet
+
 import pdfmodifier
 
 cachedPDF = []
@@ -134,10 +135,10 @@ class MainWidget(QDialog):
         self.options.addWidget(self.optionDefinitions["lockHint"])
         self.options.addWidget(self.optionDefinitions["lockEdit"])
 
-        self.optionDefinitions["passwordCheck"].stateChanged.connect(self.showUnlockWindow)
-        self.optionDefinitions["lockCheck"].stateChanged.connect(self.showLockWindow)
+        self.optionDefinitions["passwordCheck"].stateChanged.connect(self.show_unlock_window)
+        self.optionDefinitions["lockCheck"].stateChanged.connect(self.show_lock_window)
         self.optionDefinitions["merge"].clicked.connect(self.merge_pdf)
-        self.optionDefinitions["info"].clicked.connect(self.showInfo)
+        self.optionDefinitions["info"].clicked.connect(self.show_info)
         self.optionDefinitions["unlock"].clicked.connect(self.decrypt_pdf)
 
         self.list.itemSelectionChanged.connect(self.selection_change)
@@ -151,8 +152,8 @@ class MainWidget(QDialog):
         self.mainLayout.addLayout(self.options)
 
         self.setLayout(self.mainLayout)
-        self.showUnlockWindow()
-        self.showLockWindow()
+        self.show_unlock_window()
+        self.show_lock_window()
 
     def page_min_change(self):
         try:
@@ -220,7 +221,7 @@ class MainWidget(QDialog):
         print(len(cachedPDF))
         if len(cachedPDF) > 1 and self.list.currentRow() != 0:
             cachedPDF[self.list.currentRow()], cachedPDF[self.list.currentRow() - 1] = cachedPDF[
-                                                                                           self.list.currentRow() - 1], \
+                                                                                           self.list.currentRow() - 1],\
                                                                                        cachedPDF[self.list.currentRow()]
             x = self.list.currentRow() - 1
             print(cachedPDF)
@@ -237,6 +238,7 @@ class MainWidget(QDialog):
             cachedPDF[self.list.currentRow()], cachedPDF[self.list.currentRow() + 1] = cachedPDF[
                                                                                            self.list.currentRow() + 1], \
                                                                                        cachedPDF[self.list.currentRow()]
+
             x = self.list.currentRow() + 1
             print(cachedPDF)
             y = len(cachedPDF)
@@ -268,20 +270,20 @@ class MainWidget(QDialog):
     def decrypt_pdf(self):
         pdfmodifier.unlock(cachedPDF[self.list.currentRow()]["path"], self.optionDefinitions["unlockEdit"].text())
 
-    def showUnlockWindow(self):
+    def show_unlock_window(self):
         x = not self.optionDefinitions["passwordCheck"].isChecked()
         self.optionDefinitions["unlockHint"].setDisabled(x)
         self.optionDefinitions["unlock"].setDisabled(x)
         self.optionDefinitions["unlockEdit"].setDisabled(x)
         return
 
-    def showLockWindow(self):
+    def show_lock_window(self):
         x = not self.optionDefinitions["lockCheck"].isChecked()
         self.optionDefinitions["lockHint"].setDisabled(x)
         self.optionDefinitions["lockEdit"].setDisabled(x)
         return
 
-    def showInfo(self):
+    def show_info(self):
         print(cachedPDF[self.list.currentRow()]["path"])
         info, path, pages = pdfmodifier.extract_information(cachedPDF[self.list.currentRow()]["path"])
         self.window = PopupWidget(info, path, pages)
