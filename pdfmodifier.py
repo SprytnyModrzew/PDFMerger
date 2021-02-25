@@ -6,7 +6,7 @@ def merge_pdfs(paths, output, password=None):
 
     for path in paths:
         pdf_reader = PdfFileReader(path["path"])
-        for page in range(path["min"]-1, path["max"]):
+        for page in range(path["min"] - 1, path["max"]):
             # Add each page to the writer object
             pdf_writer.addPage(pdf_reader.getPage(page))
 
@@ -47,7 +47,7 @@ def extract_information(pdf_path):
     """
 
     print(txt)
-    return information
+    return information, pdf_path, number_of_pages
 
 
 def get_max_pages(pdf_path):
@@ -55,6 +55,10 @@ def get_max_pages(pdf_path):
         pdf = PdfFileReader(f)
         number_of_pages = pdf.getNumPages()
         return number_of_pages
+
+
+def is_encrypted(pdf_path):
+    return PdfFileReader(pdf_path).isEncrypted
 
 
 def unlock(pdf_path, password):

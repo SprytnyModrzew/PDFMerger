@@ -31,15 +31,34 @@ class QHLine(QFrame):
 
 
 class PopupWidget(QWidget):
-    def __init__(self, message):
+    def __init__(self, message, path, pages):
         super().__init__()
+        self.setWindowTitle("PDF Detail info")
         print(message.creator)
-        self.table = QTableWidget(7, 2)
+        self.layout = QHBoxLayout()
+        self.labelLayout = QVBoxLayout()
+        self.infoLayout = QVBoxLayout()
+        self.info = {
+            "Path": path,
+            "Pages": str(pages),
+            "Author": message.author,
+            "Creator": message.creator,
+            "Producer": message.producer,
+            "Subject": message.subject,
+            "Title": message.title
+        }
+        for i in self.info:
+            print(i)
+            self.labelLayout.addWidget(QLabel(i))
+            self.labelLayout.addWidget(QHLine())
+            self.infoLayout.addWidget(QLabel(self.info[i]))
+            self.infoLayout.addWidget(QHLine())
 
-        self.label = QLabel("poop")
+        self.layout.addLayout(self.labelLayout)
+        self.layout.addWidget(QVLine())
+        self.layout.addLayout(self.infoLayout)
         # todo bugged mess
         self.setLayout(self.layout)
-        self.layout.addWidget(self.label)
 
 
 class MainWidget(QDialog):
@@ -182,6 +201,7 @@ class MainWidget(QDialog):
             cachedPDF[index]["min"]) + "-" + str(cachedPDF[index]["max"])
 
     def selection_change(self):
+
         if len(cachedPDF) == 0:
             self.pageDefinitions["max"].setDisabled(True)
             self.pageDefinitions["min"].setDisabled(True)
@@ -262,8 +282,8 @@ class MainWidget(QDialog):
 
     def showInfo(self):
         print(cachedPDF[self.list.currentRow()]["path"])
-        info = pdfmodifier.extract_information(cachedPDF[self.list.currentRow()]["path"])
-        self.window = PopupWidget(info)
+        info, path, pages = pdfmodifier.extract_information(cachedPDF[self.list.currentRow()]["path"])
+        self.window = PopupWidget(info, path, pages)
         self.window.show()
 
     def dropEvent(self, event):
