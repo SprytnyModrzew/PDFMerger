@@ -3,7 +3,7 @@ import re
 from PySide6.QtWidgets import QApplication, QMainWindow, QHBoxLayout, QPushButton, QDialog, QListWidget, \
     QListWidgetItem, QVBoxLayout, QCheckBox, QLabel, QLineEdit, QFrame, QGridLayout, QSizePolicy, QWidget, QTableWidget, \
     QTableWidgetItem
-from PySide6.QtGui import QIntValidator, QValidator
+from PySide6.QtGui import QIntValidator, QValidator, QIcon
 # from PyQt5 import QtWidgets
 from qt_material import apply_stylesheet
 import pdfmodifier
@@ -30,10 +30,11 @@ class QHLine(QFrame):
         self.setFrameShadow(QFrame.Sunken)
 
 
-class PopupWidget(QWidget):
+class PopupWidget(QDialog):
     def __init__(self, message, path, pages):
         super().__init__()
         self.setWindowTitle("PDF Detail info")
+        self.setWindowIcon(QIcon("icon.ico"))
         print(message.creator)
         self.layout = QHBoxLayout()
         self.labelLayout = QVBoxLayout()
@@ -65,7 +66,7 @@ class MainWidget(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("PDF Merger")
-        self.resize(720, 360)
+        self.resize(1080, 360)
         self.setAcceptDrops(True)
         self.mainLayout = QHBoxLayout()
 
@@ -309,6 +310,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     apply_stylesheet(app, theme='dark_amber.xml')
     ui = MainWidget()
+    ui.setWindowIcon(QIcon("icon.ico"))
     ui.show()
     sys.exit(app.exec_())
 # setup stylesheet
